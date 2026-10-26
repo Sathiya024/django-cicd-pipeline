@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE = IMAGE = "YOUR_DOCKERHUB_USERNAME/django-cicd-app"
+        IMAGE = "YOUR_DOCKERHUB_USERNAME/django-cicd-app"
         TAG   = "${env.BUILD_NUMBER}"
     }
 
