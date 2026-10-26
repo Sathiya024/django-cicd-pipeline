@@ -1,0 +1,67 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE = "YOUR_DOCKERHUB_USERNAME/django-cicd-app"
+        TAG   = "${env.BUILD_NUMBER}"
+    }
+
+    stages {
+        stage('Test') {
+            steps {
+                sh '''
+                    cd app
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    pip install -r requirements.txt
+                    pytest --cov=. --cov-report=xml:coverage.xml
+                '''
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            environment {
+                SCANNER_HOME = tool 'SonarScanner'
+            }
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh "${SCANNER_HOME}/bin/sonar-scanner"
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+
+        stage('Build Image') {
+            steps {
+                sh 'docker build -t $IMAGE:$TAG -t $IMAGE:latest ./app'
+            }
+        }
+
+        stage('Push Image') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds',
+                                                  usernameVariable: 'DOCKER_USER',
+                                                  passwordVariable: 'DOCKER_PASS')]) {
+                    sh '''
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                        docker push $IMAGE:$TAG
+                        docker push $IMAGE:latest
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            sh 'docker logout || true'
+        }
+    }
+}
