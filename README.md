@@ -3,6 +3,9 @@
 
 `GET /health/` returns `{"status": "ok"}` and is used to confirm the app is running.
 
+![Uploading image.png…]()
+
+
 ## Setup
 
 ### 1. Run the app locally
