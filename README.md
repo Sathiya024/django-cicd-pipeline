@@ -82,4 +82,4 @@ Click **Build Now** in Jenkins. A successful run shows all four stages in green,
 
 ## Author
 
-[Your name] — [Your email or LinkedIn]
+[Sathiya Narayanan] — [sathiyanarayanan2003s@gmail.com]
