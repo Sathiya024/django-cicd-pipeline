@@ -3,7 +3,7 @@
 
 `GET /health/` returns `{"status": "ok"}` and is used to confirm the app is running.
 
-![Uploading image.png…]()
+<img width="1808" height="991" alt="image" src="https://github.com/user-attachments/assets/60756abf-0398-4951-bb68-1dc70c097d78" />
 
 
 ## Setup
